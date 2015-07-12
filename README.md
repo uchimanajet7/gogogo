@@ -1,0 +1,2 @@
+# gogogo
+golang simple loop
