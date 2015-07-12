@@ -1,0 +1,21 @@
+language: go
+go:
+  - 1.4.2
+env:
+  - "PATH=/home/travis/gopath/bin:$PATH"
+before_install:
+  - go get github.com/mitchellh/gox
+  - gox -build-toolchain -os="linux windows darwin"
+  - go get github.com/tcnksm/ghr
+  - go get github.com/golang/lint/golint
+script:
+  - $HOME/gopath/bin/golint ./...
+after_success:
+  - gox -output "_pkg/{{.Dir}}_{{.OS}}_{{.Arch}}/{{.Dir}}" -os="linux windows darwin"
+  - find _pkg -maxdepth 1 -mindepth 1 -type d -exec cp README.* {}/ \;
+  - find _pkg -maxdepth 1 -mindepth 1 -type d -exec cp *.example {}/ \;
+  - cd _pkg
+  - find . -maxdepth 1 -mindepth 1 -type d -exec zip -r {}.zip {}/ \;
+  - cd ..
+  - TAG=`cat _tag | awk "NR==1"`
+  - ghr --username $GITHUB_USER --token $GITHUB_TOKEN --replace $TAG _pkg/
