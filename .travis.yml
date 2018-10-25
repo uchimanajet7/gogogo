@@ -7,7 +7,7 @@ before_install:
   - go get github.com/mitchellh/gox
   - gox -build-toolchain -os="linux windows darwin"
   - go get github.com/tcnksm/ghr
-  - go get github.com/golang/lint/golint
+  - go get golang.org/x/lint/golint
 script:
   - $HOME/gopath/bin/golint ./...
 after_success:
